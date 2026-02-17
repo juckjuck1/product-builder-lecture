@@ -3,441 +3,207 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>로또 번호 추천 | 랜덤 생성기</title>
+  <title>로또 번호 생성기</title>
   <style>
     :root {
-      --bg: #0b0f1a;
-      --card: #121a2a;
-      --text: #eaf0ff;
-      --muted: #a9b6d3;
-      --accent: #7aa2ff;
-      --line: rgba(255, 255, 255, 0.1);
-      --good: #7cffd1;
+      --bg: #0f172a;
+      --card: #111827;
+      --line: #23324a;
+      --text: #e5edff;
+      --muted: #9fb0d1;
+      --accent: #38bdf8;
+      --ok: #22c55e;
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", Roboto, Helvetica, Arial;
-      background:
-        radial-gradient(900px 500px at 20% 0%, rgba(122, 162, 255, 0.22), transparent 55%),
-        radial-gradient(900px 500px at 80% 10%, rgba(124, 255, 209, 0.14), transparent 55%),
-        var(--bg);
-      color: var(--text);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-    }
-
-    .wrap { width: min(920px, 100%); }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
-
-    .logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(122, 162, 255, 0.95), rgba(124, 255, 209, 0.75));
-      box-shadow: 0 10px 30px rgba(122, 162, 255, 0.22);
-    }
-
-    .chip {
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.04);
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .card {
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-      border-radius: 22px;
-      padding: 18px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    @media (max-width: 860px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-
-    h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      margin: 0 0 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
-    }
-
-    .balls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 12px 0 10px;
-      min-height: 64px;
-      align-items: center;
-    }
-
-    .ball {
-      width: 52px;
-      height: 52px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(18, 26, 42, 0.7);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .ball.pop { animation: pop 0.38s ease-out both; }
-
-    @keyframes pop {
-      from { transform: translateY(8px) scale(0.92); opacity: 0; filter: blur(1px); }
-      to { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
-    }
-
-    .bonusRow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 6px;
-    }
-
-    .plus {
-      width: 22px;
-      height: 22px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.03);
-      font-weight: 800;
-    }
-
-    .divider {
-      height: 1px;
-      background: var(--line);
-      margin: 14px 0;
-    }
-
-    .btns {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    button {
-      border: 1px solid var(--line);
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.04);
+      font-family: "Noto Sans KR", "Segoe UI", sans-serif;
       color: var(--text);
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      border-color: rgba(255, 255, 255, 0.22);
-    }
-
-    .primary {
-      border-color: rgba(122, 162, 255, 0.55);
-      background: rgba(122, 162, 255, 0.16);
-      box-shadow: 0 14px 40px rgba(122, 162, 255, 0.12);
-    }
-
-    .ghost { color: var(--muted); }
-
-    .side {
-      border: 1px solid var(--line);
-      background: rgba(18, 26, 42, 0.72);
-      border-radius: 18px;
+      background:
+        radial-gradient(900px 500px at 10% 0%, rgba(56, 189, 248, 0.18), transparent 60%),
+        radial-gradient(1000px 600px at 90% 10%, rgba(34, 197, 94, 0.12), transparent 60%),
+        var(--bg);
+      display: grid;
+      place-items: center;
       padding: 16px;
     }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 10px;
+    .app {
+      width: min(900px, 100%);
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 14px;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius: 20px;
+      padding: 20px;
     }
-
-    .row strong {
+    h1 { margin: 0 0 8px; font-size: 30px; }
+    .sub { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    select, button {
+      border: 1px solid var(--line);
+      background: #0b1220;
       color: var(--text);
-      font-weight: 800;
-    }
-
-    .hint {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
+      border-radius: 10px;
+      padding: 10px 12px;
       font-size: 14px;
     }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      padding: 10px 12px;
-      border-radius: 999px;
+    button { cursor: pointer; font-weight: 700; }
+    .primary {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.6);
+    }
+    .secondary { color: var(--muted); }
+    #result {
       border: 1px solid var(--line);
-      background: rgba(18, 26, 42, 0.88);
-      color: var(--text);
-      font-size: 13px;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.25s;
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 12px;
+      min-height: 90px;
+      background: rgba(11, 18, 32, 0.7);
     }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(-4px);
+    .line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0;
     }
-
-    footer {
-      margin-top: 12px;
-      text-align: center;
+    .tag {
+      width: 26px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
     }
-
-    .accent { color: var(--accent); }
-    .good { color: var(--good); }
+    .ball {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.18);
+      font-weight: 800;
+      font-size: 14px;
+      background: rgba(255,255,255,.06);
+    }
+    .plus { color: var(--muted); font-weight: 700; margin: 0 2px; }
+    .hint { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+    .ok { color: var(--ok); }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>랜덤형 <span class="accent">로또 번호 추천기</span></div>
-      </div>
-      <div class="chip" id="roundInfo">버튼을 눌러 추천</div>
-    </header>
+  <main class="app">
+    <h1>로또 번호 생성기</h1>
+    <p class="sub">1~45 중복 없이 6개 + 보너스 1개를 무작위로 생성합니다.</p>
 
-    <section class="card">
-      <div class="grid">
-        <div>
-          <h1>한 번에 랜덤으로 로또 번호 받기</h1>
-          <p class="subtitle">
-            1~45에서 <span class="good">중복 없이 6개</span>를 추천합니다. (보너스 번호는 1개)
-          </p>
+    <div class="toolbar">
+      <label for="count">생성 줄 수</label>
+      <select id="count">
+        <option value="1">1줄</option>
+        <option value="3" selected>3줄</option>
+        <option value="5">5줄</option>
+      </select>
+      <button id="genBtn" class="primary" type="button">번호 생성</button>
+      <button id="copyBtn" class="secondary" type="button" disabled>결과 복사</button>
+    </div>
 
-          <div class="balls" id="balls" aria-live="polite" aria-label="추천 번호"></div>
-
-          <div class="bonusRow" id="bonusRow" style="display:none;">
-            <span>보너스</span>
-            <span class="plus">+</span>
-            <span id="bonusSlot"></span>
-          </div>
-
-          <div class="btns">
-            <button class="primary" id="genBtn" type="button">번호 추천받기</button>
-            <button class="ghost" id="copyBtn" type="button" disabled>번호 복사</button>
-            <button class="ghost" id="againBtn" type="button" disabled>다시 뽑기</button>
-          </div>
-
-          <div class="divider"></div>
-
-          <p class="hint" id="hint">
-            아직 번호가 없습니다. <strong class="accent">번호 추천받기</strong>를 눌러보세요.
-          </p>
-        </div>
-
-        <aside class="side">
-          <h3 style="margin:0 0 8px;">추천 규칙</h3>
-          <p class="hint" style="margin:0;">
-            이 추천기는 당첨 확률을 보장하지 않으며, 완전 랜덤으로 생성됩니다.
-            번호는 오름차순으로 정렬해서 보여줍니다.
-          </p>
-
-          <div class="row">
-            <span>생성 방식</span>
-            <strong>무작위 + 중복 제거</strong>
-          </div>
-          <div class="row">
-            <span>메인 번호</span>
-            <strong>6개</strong>
-          </div>
-          <div class="row">
-            <span>보너스</span>
-            <strong>1개</strong>
-          </div>
-          <div class="row">
-            <span>범위</span>
-            <strong>1 ~ 45</strong>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <footer>
-      © <span id="year"></span> 랜덤형. 행운을 빌어요.
-    </footer>
-
-    <div class="toast" id="toast">복사되었습니다</div>
-  </div>
+    <section id="result" aria-live="polite"></section>
+    <p id="status" class="hint">아직 생성된 번호가 없습니다.</p>
+  </main>
 
   <script>
     const $ = (id) => document.getElementById(id);
+    const resultEl = $("result");
+    const statusEl = $("status");
+    const copyBtn = $("copyBtn");
 
-    function randInt(min, max) {
+    let lastText = "";
+
+    function rand(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function pickLotto() {
+    function pickOne() {
       const set = new Set();
-      while (set.size < 7) {
-        set.add(randInt(1, 45));
-      }
-      const arr = Array.from(set);
+      while (set.size < 7) set.add(rand(1, 45));
+      const arr = [...set];
       const main = arr.slice(0, 6).sort((a, b) => a - b);
       const bonus = arr[6];
       return { main, bonus };
     }
 
-    function colorHint(num) {
-      if (num <= 10) return "rgba(255, 210, 64, 0.22)";
-      if (num <= 20) return "rgba(122, 162, 255, 0.20)";
-      if (num <= 30) return "rgba(255, 126, 183, 0.18)";
-      if (num <= 40) return "rgba(124, 255, 209, 0.16)";
-      return "rgba(205, 205, 205, 0.14)";
+    function ballColor(n) {
+      if (n <= 10) return "rgba(245, 158, 11, .26)";
+      if (n <= 20) return "rgba(59, 130, 246, .24)";
+      if (n <= 30) return "rgba(239, 68, 68, .22)";
+      if (n <= 40) return "rgba(34, 197, 94, .22)";
+      return "rgba(156, 163, 175, .22)";
     }
 
-    function renderBalls(main, bonus) {
-      const ballsEl = $("balls");
-      ballsEl.innerHTML = "";
+    function makeBall(n) {
+      const span = document.createElement("span");
+      span.className = "ball";
+      span.textContent = n;
+      span.style.background = `linear-gradient(180deg, ${ballColor(n)}, rgba(11,18,32,.8))`;
+      return span;
+    }
 
-      main.forEach((n, idx) => {
-        const el = document.createElement("div");
-        el.className = "ball pop";
-        el.textContent = n;
-        el.style.animationDelay = idx * 60 + "ms";
-        el.style.background = `linear-gradient(180deg, ${colorHint(n)}, rgba(18,26,42,0.72))`;
-        ballsEl.appendChild(el);
+    function render(lines) {
+      resultEl.innerHTML = "";
+      lines.forEach((line, idx) => {
+        const row = document.createElement("div");
+        row.className = "line";
+
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = `${idx + 1}줄`;
+        row.appendChild(tag);
+
+        line.main.forEach((n) => row.appendChild(makeBall(n)));
+
+        const plus = document.createElement("span");
+        plus.className = "plus";
+        plus.textContent = "+";
+        row.appendChild(plus);
+
+        row.appendChild(makeBall(line.bonus));
+        resultEl.appendChild(row);
       });
-
-      $("bonusRow").style.display = "flex";
-      const bonusEl = document.createElement("span");
-      bonusEl.className = "ball pop";
-      bonusEl.style.width = "46px";
-      bonusEl.style.height = "46px";
-      bonusEl.style.fontSize = "16px";
-      bonusEl.style.animationDelay = main.length * 60 + "ms";
-      bonusEl.style.background = `linear-gradient(180deg, ${colorHint(bonus)}, rgba(18,26,42,0.72))`;
-      bonusEl.textContent = bonus;
-
-      const bonusSlot = $("bonusSlot");
-      bonusSlot.innerHTML = "";
-      bonusSlot.appendChild(bonusEl);
     }
 
-    function showToast(msg) {
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), 1200);
+    function format(lines) {
+      return lines.map((line, idx) => `${idx + 1}줄: ${line.main.join(", ")} + ${line.bonus}`).join("\n");
     }
-
-    function formatLine(main, bonus) {
-      return `메인: ${main.join(", ")} | 보너스: ${bonus}`;
-    }
-
-    let last = null;
 
     function generate() {
-      last = pickLotto();
-      renderBalls(last.main, last.bonus);
-
-      $("copyBtn").disabled = false;
-      $("againBtn").disabled = false;
-
-      $("hint").innerHTML =
-        `추천 번호가 생성되었습니다. <strong class="good">복사</strong>하거나 <strong class="accent">다시 뽑기</strong>를 눌러보세요.`;
-
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      const ss = String(now.getSeconds()).padStart(2, "0");
-      $("roundInfo").textContent = `생성 시각 ${hh}:${mm}:${ss}`;
+      const count = Number($("count").value);
+      const lines = Array.from({ length: count }, () => pickOne());
+      render(lines);
+      lastText = format(lines);
+      statusEl.innerHTML = `<span class="ok">생성 완료</span> - ${new Date().toLocaleString("ko-KR")}`;
+      copyBtn.disabled = false;
     }
 
     async function copy() {
-      if (!last) return;
-      const text = formatLine(last.main, last.bonus);
-
+      if (!lastText) return;
       try {
-        await navigator.clipboard.writeText(text);
-        showToast("번호가 복사되었습니다");
-      } catch (e) {
+        await navigator.clipboard.writeText(lastText);
+        statusEl.innerHTML = `<span class="ok">복사 완료</span> - 클립보드에 저장되었습니다.`;
+      } catch {
         const ta = document.createElement("textarea");
-        ta.value = text;
+        ta.value = lastText;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
         ta.remove();
-        showToast("번호가 복사되었습니다");
+        statusEl.innerHTML = `<span class="ok">복사 완료</span> - 클립보드에 저장되었습니다.`;
       }
     }
 
-    $("year").textContent = new Date().getFullYear();
-
     $("genBtn").addEventListener("click", generate);
-    $("againBtn").addEventListener("click", generate);
-    $("copyBtn").addEventListener("click", copy);
+    copyBtn.addEventListener("click", copy);
   </script>
 </body>
 </html>
