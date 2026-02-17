@@ -649,6 +649,33 @@
       ].join("\n");
     }
 
+    function applyTheme(theme) {
+      root.setAttribute("data-theme", theme);
+      const themeBtn = $("themeToggle");
+      if (themeBtn) {
+        themeBtn.textContent = theme === "dark" ? "라이트 모드" : "다크 모드";
+      }
+      try {
+        localStorage.setItem("theme", theme);
+      } catch (e) {
+        // Ignore storage errors in restricted environments (e.g., file://).
+      }
+    }
+
+    function initTheme() {
+      let saved = null;
+      try {
+        saved = localStorage.getItem("theme");
+      } catch (e) {
+        saved = null;
+      }
+      if (saved === "dark" || saved === "light") {
+        applyTheme(saved);
+        return;
+      }
+      applyTheme("light");
+    }
+
     $("goFortune").addEventListener("click", () => show("fortune"));
     $("goAnalysis").addEventListener("click", () => show("analysis"));
     document.querySelectorAll("[data-back]").forEach((btn) => {
@@ -709,36 +736,16 @@
     });
 
     $("aCopy").addEventListener("click", () => copyText(aLast, "aMeta"));
-    $("themeToggle").addEventListener("click", () => {
-      const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
-      applyTheme(current === "dark" ? "light" : "dark");
-    });
+    const themeBtn = $("themeToggle");
+    if (themeBtn) {
+      themeBtn.addEventListener("click", () => {
+        const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        applyTheme(current === "dark" ? "light" : "dark");
+      });
+    }
 
     initTheme();
     initDefaults();
   </script>
 </body>
 </html>
-    function applyTheme(theme) {
-      root.setAttribute("data-theme", theme);
-      $("themeToggle").textContent = theme === "dark" ? "라이트 모드" : "다크 모드";
-      try {
-        localStorage.setItem("theme", theme);
-      } catch (_) {
-        // Ignore storage errors in restricted environments (e.g., file://).
-      }
-    }
-
-    function initTheme() {
-      let saved = null;
-      try {
-        saved = localStorage.getItem("theme");
-      } catch (_) {
-        saved = null;
-      }
-      if (saved === "dark" || saved === "light") {
-        applyTheme(saved);
-        return;
-      }
-      applyTheme("light");
-    }
