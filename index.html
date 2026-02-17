@@ -1,197 +1,230 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>로또 번호 추천 | 적적</title>
+  <title>로또 번호 추천 | 랜덤 생성기</title>
   <style>
-    :root{
-      --bg:#0b0f1a;
-      --card:#121a2a;
-      --text:#eaf0ff;
-      --muted:#a9b6d3;
-      --accent:#7aa2ff;
-      --line:rgba(255,255,255,.10);
-      --good:#7cffd1;
+    :root {
+      --bg: #0b0f1a;
+      --card: #121a2a;
+      --text: #eaf0ff;
+      --muted: #a9b6d3;
+      --accent: #7aa2ff;
+      --line: rgba(255, 255, 255, 0.1);
+      --good: #7cffd1;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo",
-                   "Noto Sans KR", "Segoe UI", Roboto, Helvetica, Arial;
-      background: radial-gradient(900px 500px at 20% 0%, rgba(122,162,255,.22), transparent 55%),
-                  radial-gradient(900px 500px at 80% 10%, rgba(124,255,209,.14), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(122, 162, 255, 0.22), transparent 55%),
+        radial-gradient(900px 500px at 80% 10%, rgba(124, 255, 209, 0.14), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 24px 16px;
     }
-    .wrap{
-      width:min(920px, 100%);
-    }
-    header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
+
+    .wrap { width: min(920px, 100%); }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 12px;
     }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      font-weight:800; letter-spacing:.2px;
-    }
-    .logo{
-      width:40px; height:40px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(122,162,255,.95), rgba(124,255,209,.75));
-      box-shadow: 0 10px 30px rgba(122,162,255,.22);
-    }
-    .chip{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:13px;
-      color:var(--muted);
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
     }
 
-    .card{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(122, 162, 255, 0.95), rgba(124, 255, 209, 0.75));
+      box-shadow: 0 10px 30px rgba(122, 162, 255, 0.22);
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
       border-radius: 22px;
       padding: 18px;
-      overflow:hidden;
-      position:relative;
+      overflow: hidden;
+      position: relative;
     }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      align-items:stretch;
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+      align-items: stretch;
     }
-    @media (max-width: 860px){
-      .grid{grid-template-columns:1fr}
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
     }
-    h1{
+
+    h1 {
       margin: 0 0 6px;
       font-size: 28px;
-      line-height:1.2;
-    }
-    .subtitle{
-      margin:0 0 14px;
-      color:var(--muted);
-      line-height:1.6;
-      font-size: 14px;
+      line-height: 1.2;
     }
 
-    .balls{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin: 12px 0 10px;
-      min-height: 64px;
-      align-items:center;
-    }
-    .ball{
-      width:52px; height:52px;
-      border-radius: 999px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:900;
-      font-size: 18px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(18,26,42,.70);
-      box-shadow: 0 14px 40px rgba(0,0,0,.22);
-      transform: translateY(0);
-      opacity: 1;
-    }
-    .ball.pop{
-      animation: pop .38s ease-out both;
-    }
-    @keyframes pop{
-      from{ transform: translateY(8px) scale(.92); opacity:0; filter: blur(1px);}
-      to{ transform: translateY(0) scale(1); opacity:1; filter: blur(0);}
-    }
-
-    .bonusRow{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color:var(--muted);
-      font-size: 13px;
-      margin-top: 6px;
-    }
-    .plus{
-      width:22px; height:22px;
-      display:inline-flex; align-items:center; justify-content:center;
-      border-radius: 8px;
-      border:1px solid var(--line);
-      color: var(--muted);
-      background: rgba(255,255,255,.03);
-      font-weight:800;
-    }
-    .divider{
-      height:1px;
-      background: var(--line);
-      margin: 14px 0;
-    }
-
-    .btns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    button{
-      border:1px solid var(--line);
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      font-weight: 700;
-      font-size: 14px;
-      cursor:pointer;
-      transition:.2s;
-    }
-    button:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); }
-    .primary{
-      border-color: rgba(122,162,255,.55);
-      background: rgba(122,162,255,.16);
-      box-shadow: 0 14px 40px rgba(122,162,255,.12);
-    }
-    .ghost{
-      color: var(--muted);
-    }
-
-    .side{
-      border:1px solid var(--line);
-      background: rgba(18,26,42,.72);
-      border-radius: 18px;
-      padding: 16px;
-    }
-    .row{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding: 10px 10px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .row strong{ color: var(--text); font-weight:800; }
-    .hint{
-      margin:0;
+    .subtitle {
+      margin: 0 0 14px;
       color: var(--muted);
       line-height: 1.6;
       font-size: 14px;
     }
-    .toast{
+
+    .balls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 10px;
+      min-height: 64px;
+      align-items: center;
+    }
+
+    .ball {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(18, 26, 42, 0.7);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .ball.pop { animation: pop 0.38s ease-out both; }
+
+    @keyframes pop {
+      from { transform: translateY(8px) scale(0.92); opacity: 0; filter: blur(1px); }
+      to { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+    }
+
+    .bonusRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .plus {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      font-weight: 800;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 14px 0;
+    }
+
+    .btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .primary {
+      border-color: rgba(122, 162, 255, 0.55);
+      background: rgba(122, 162, 255, 0.16);
+      box-shadow: 0 14px 40px rgba(122, 162, 255, 0.12);
+    }
+
+    .ghost { color: var(--muted); }
+
+    .side {
+      border: 1px solid var(--line);
+      background: rgba(18, 26, 42, 0.72);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .row strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .toast {
       position: fixed;
       left: 50%;
       bottom: 18px;
@@ -199,23 +232,29 @@
       padding: 10px 12px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(18,26,42,.88);
+      background: rgba(18, 26, 42, 0.88);
       color: var(--text);
       font-size: 13px;
-      opacity:0;
-      pointer-events:none;
-      transition: .25s;
-      box-shadow: 0 16px 50px rgba(0,0,0,.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
     }
-    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-4px); }
-    footer{
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    footer {
       margin-top: 12px;
-      text-align:center;
+      text-align: center;
       color: var(--muted);
       font-size: 12px;
     }
-    .accent{ color: var(--accent); }
-    .good{ color: var(--good); }
+
+    .accent { color: var(--accent); }
+    .good { color: var(--good); }
   </style>
 </head>
 
@@ -224,22 +263,20 @@
     <header>
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
-        <div>적적의 <span class="accent">로또 번호 추천기</span></div>
+        <div>랜덤형 <span class="accent">로또 번호 추천기</span></div>
       </div>
-      <div class="chip" id="roundInfo">랜덤 추천</div>
+      <div class="chip" id="roundInfo">버튼을 눌러 추천</div>
     </header>
 
     <section class="card">
       <div class="grid">
         <div>
-          <h1>버튼 한 번으로 로또 번호 뽑기 🎲</h1>
+          <h1>한 번에 랜덤으로 로또 번호 받기</h1>
           <p class="subtitle">
-            1~45에서 <span class="good">중복 없이 6개</span>를 추천해요. (보너스 번호도 1개!)
+            1~45에서 <span class="good">중복 없이 6개</span>를 추천합니다. (보너스 번호는 1개)
           </p>
 
-          <div class="balls" id="balls" aria-live="polite" aria-label="추천 번호">
-            <!-- 번호가 여기 출력됩니다 -->
-          </div>
+          <div class="balls" id="balls" aria-live="polite" aria-label="추천 번호"></div>
 
           <div class="bonusRow" id="bonusRow" style="display:none;">
             <span>보너스</span>
@@ -256,15 +293,15 @@
           <div class="divider"></div>
 
           <p class="hint" id="hint">
-            아직 번호가 없어요. <strong class="accent">번호 추천받기</strong>를 눌러보세요.
+            아직 번호가 없습니다. <strong class="accent">번호 추천받기</strong>를 눌러보세요.
           </p>
         </div>
 
         <aside class="side">
-          <h3 style="margin:0 0 8px;">추첨 요약</h3>
+          <h3 style="margin:0 0 8px;">추천 규칙</h3>
           <p class="hint" style="margin:0;">
-            이 추천기는 특정 전략을 보장하지 않고, 완전 랜덤으로 생성합니다.
-            번호는 오름차순으로 정렬해 보여줘요.
+            이 추천기는 당첨 확률을 보장하지 않으며, 완전 랜덤으로 생성됩니다.
+            번호는 오름차순으로 정렬해서 보여줍니다.
           </p>
 
           <div class="row">
@@ -288,41 +325,39 @@
     </section>
 
     <footer>
-      © <span id="year"></span> 적적. 행운을 빌어요 🍀
+      © <span id="year"></span> 랜덤형. 행운을 빌어요.
     </footer>
 
-    <div class="toast" id="toast">복사했어요!</div>
+    <div class="toast" id="toast">복사되었습니다</div>
+  </div>
 
   <script>
-    // --- Utils ---
     const $ = (id) => document.getElementById(id);
 
-    function randInt(min, max){
+    function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // 1~45 중복 없이 7개(6+보너스) 뽑기
-    function pickLotto(){
+    function pickLotto() {
       const set = new Set();
-      while(set.size < 7) set.add(randInt(1,45));
+      while (set.size < 7) {
+        set.add(randInt(1, 45));
+      }
       const arr = Array.from(set);
-      const main = arr.slice(0,6).sort((a,b)=>a-b);
+      const main = arr.slice(0, 6).sort((a, b) => a - b);
       const bonus = arr[6];
-      // bonus가 main에 있을 수는 없지만(세트라서) 보기 좋게 정리
       return { main, bonus };
     }
 
-    function colorHint(num){
-      // 시각적 재미용 범위 분류(로또 공식 색과 완전 동일 보장은 아님)
-      // 1-10 / 11-20 / 21-30 / 31-40 / 41-45
-      if(num<=10) return "rgba(255, 210, 64, .22)";
-      if(num<=20) return "rgba(122, 162, 255, .20)";
-      if(num<=30) return "rgba(255, 126, 183, .18)";
-      if(num<=40) return "rgba(124, 255, 209, .16)";
-      return "rgba(205, 205, 205, .14)";
+    function colorHint(num) {
+      if (num <= 10) return "rgba(255, 210, 64, 0.22)";
+      if (num <= 20) return "rgba(122, 162, 255, 0.20)";
+      if (num <= 30) return "rgba(255, 126, 183, 0.18)";
+      if (num <= 40) return "rgba(124, 255, 209, 0.16)";
+      return "rgba(205, 205, 205, 0.14)";
     }
 
-    function renderBalls(main, bonus){
+    function renderBalls(main, bonus) {
       const ballsEl = $("balls");
       ballsEl.innerHTML = "";
 
@@ -330,20 +365,19 @@
         const el = document.createElement("div");
         el.className = "ball pop";
         el.textContent = n;
-        el.style.animationDelay = (idx * 60) + "ms";
-        el.style.background = `linear-gradient(180deg, ${colorHint(n)}, rgba(18,26,42,.72))`;
+        el.style.animationDelay = idx * 60 + "ms";
+        el.style.background = `linear-gradient(180deg, ${colorHint(n)}, rgba(18,26,42,0.72))`;
         ballsEl.appendChild(el);
       });
 
-      // Bonus
       $("bonusRow").style.display = "flex";
       const bonusEl = document.createElement("span");
       bonusEl.className = "ball pop";
       bonusEl.style.width = "46px";
       bonusEl.style.height = "46px";
       bonusEl.style.fontSize = "16px";
-      bonusEl.style.animationDelay = (main.length * 60) + "ms";
-      bonusEl.style.background = `linear-gradient(180deg, ${colorHint(bonus)}, rgba(18,26,42,.72))`;
+      bonusEl.style.animationDelay = main.length * 60 + "ms";
+      bonusEl.style.background = `linear-gradient(180deg, ${colorHint(bonus)}, rgba(18,26,42,0.72))`;
       bonusEl.textContent = bonus;
 
       const bonusSlot = $("bonusSlot");
@@ -351,21 +385,20 @@
       bonusSlot.appendChild(bonusEl);
     }
 
-    function showToast(msg){
+    function showToast(msg) {
       const t = $("toast");
       t.textContent = msg;
       t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1200);
+      setTimeout(() => t.classList.remove("show"), 1200);
     }
 
-    function formatLine(main, bonus){
+    function formatLine(main, bonus) {
       return `메인: ${main.join(", ")} | 보너스: ${bonus}`;
     }
 
-    // --- App State ---
     let last = null;
 
-    function generate(){
+    function generate() {
       last = pickLotto();
       renderBalls(last.main, last.bonus);
 
@@ -373,44 +406,38 @@
       $("againBtn").disabled = false;
 
       $("hint").innerHTML =
-        `추천 번호가 생성됐어요! <strong class="good">복사</strong>하거나 <strong class="accent">다시 뽑기</strong> 할 수 있어요.`;
+        `추천 번호가 생성되었습니다. <strong class="good">복사</strong>하거나 <strong class="accent">다시 뽑기</strong>를 눌러보세요.`;
 
-      // "roundInfo"에 생성 시각 표시
       const now = new Date();
-      const hh = String(now.getHours()).padStart(2,"0");
-      const mm = String(now.getMinutes()).padStart(2,"0");
-      const ss = String(now.getSeconds()).padStart(2,"0");
-      $("roundInfo").textContent = `생성됨: ${hh}:${mm}:${ss}`;
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      const ss = String(now.getSeconds()).padStart(2, "0");
+      $("roundInfo").textContent = `생성 시각 ${hh}:${mm}:${ss}`;
     }
 
-    async function copy(){
-      if(!last) return;
+    async function copy() {
+      if (!last) return;
       const text = formatLine(last.main, last.bonus);
 
-      try{
+      try {
         await navigator.clipboard.writeText(text);
-        showToast("번호를 복사했어요!");
-      }catch(e){
-        // 권한/환경 이슈 대비
+        showToast("번호가 복사되었습니다");
+      } catch (e) {
         const ta = document.createElement("textarea");
         ta.value = text;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
         ta.remove();
-        showToast("번호를 복사했어요!");
+        showToast("번호가 복사되었습니다");
       }
     }
 
-    // --- Bind ---
     $("year").textContent = new Date().getFullYear();
 
     $("genBtn").addEventListener("click", generate);
     $("againBtn").addEventListener("click", generate);
     $("copyBtn").addEventListener("click", copy);
-
-    // 첫 화면에 기본 안내용 예시(원하면 주석 처리 가능)
-    // generate();
   </script>
 </body>
 </html>
