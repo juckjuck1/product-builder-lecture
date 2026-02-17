@@ -15,6 +15,8 @@
       --brand-soft: #e0f2fe;
       --ok: #16a34a;
       --warn: #f59e0b;
+      --soft-surface: #f8fafc;
+      --result-bg: #fbfdff;
     }
     :root[data-theme="dark"] {
       --bg: #0b1220;
@@ -26,6 +28,8 @@
       --brand-soft: #0b2840;
       --ok: #22c55e;
       --warn: #f59e0b;
+      --soft-surface: #0f172a;
+      --result-bg: #0d1526;
     }
 
     * { box-sizing: border-box; }
@@ -230,7 +234,7 @@
       border-radius: 12px;
       padding: 10px;
       min-height: 90px;
-      background: color-mix(in srgb, var(--surface) 85%, var(--bg));
+      background: var(--result-bg);
     }
 
     .line {
@@ -256,7 +260,7 @@
       font-size: 14px;
       font-weight: 800;
       border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--surface) 88%, var(--bg));
+      background: var(--soft-surface);
     }
 
     .plus { color: var(--muted); font-weight: 700; }
@@ -718,11 +722,20 @@
     function applyTheme(theme) {
       root.setAttribute("data-theme", theme);
       $("themeToggle").textContent = theme === "dark" ? "라이트 모드" : "다크 모드";
-      localStorage.setItem("theme", theme);
+      try {
+        localStorage.setItem("theme", theme);
+      } catch (_) {
+        // Ignore storage errors in restricted environments (e.g., file://).
+      }
     }
 
     function initTheme() {
-      const saved = localStorage.getItem("theme");
+      let saved = null;
+      try {
+        saved = localStorage.getItem("theme");
+      } catch (_) {
+        saved = null;
+      }
       if (saved === "dark" || saved === "light") {
         applyTheme(saved);
         return;
