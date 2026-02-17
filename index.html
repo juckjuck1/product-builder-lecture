@@ -122,16 +122,11 @@
       border-color: #cdd8e6;
       box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
     }
-    :root[data-theme="dark"] .mode-card {
-      background: #ffffff;
-      border-color: #d9e2ef;
-      color: #111827;
-    }
     :root[data-theme="dark"] .mode-card .mode-title {
-      color: #111827;
+      color: var(--text);
     }
     :root[data-theme="dark"] .mode-card .mode-desc {
-      color: #475569;
+      color: var(--muted);
     }
 
     .badge {
@@ -450,6 +445,7 @@
       b.className = "ball";
       b.textContent = n;
       b.style.background = `linear-gradient(180deg, ${numColor(n)}, #ffffff)`;
+      b.style.color = "#111827";
       return b;
     }
 
