@@ -3,187 +3,437 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>오늘의 행운 로또 생성기</title>
+  <title>로또 모드 생성기</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --card: #121a30;
-      --line: #263554;
-      --text: #eaf1ff;
-      --muted: #a7b6d8;
-      --accent: #f59e0b;
-      --subaccent: #38bdf8;
-      --ok: #22c55e;
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --line: #e6ebf2;
+      --text: #111827;
+      --muted: #6b7280;
+      --brand: #0ea5e9;
+      --brand-soft: #e0f2fe;
+      --ok: #16a34a;
+      --warn: #f59e0b;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      min-height: 100vh;
-      font-family: "Noto Sans KR", "Segoe UI", sans-serif;
+      font-family: "Pretendard Variable", "SUIT Variable", "Noto Sans KR", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(900px 500px at 15% 0%, rgba(245, 158, 11, .20), transparent 60%),
-        radial-gradient(900px 600px at 85% 10%, rgba(56, 189, 248, .16), transparent 60%),
+        radial-gradient(1000px 520px at -5% -20%, #e0f2fe 0%, transparent 60%),
+        radial-gradient(900px 500px at 105% -20%, #dcfce7 0%, transparent 62%),
         var(--bg);
-      display: grid;
-      place-items: center;
-      padding: 16px;
+      min-height: 100vh;
+      padding: 20px 14px;
     }
-    .app {
-      width: min(980px, 100%);
+
+    .container {
+      width: min(960px, 100%);
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
       border: 1px solid var(--line);
-      border-radius: 18px;
+      background: var(--surface);
+      border-radius: 20px;
       padding: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: 0 12px 40px rgba(17, 24, 39, 0.06);
+      animation: fade .22s ease;
     }
-    h1 { margin: 0 0 8px; font-size: 30px; }
-    .sub { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.5; }
-    .grid {
+
+    .page.active { display: block; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .title {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.02em;
+    }
+
+    .sub {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .mode-grid {
+      margin-top: 16px;
       display: grid;
-      grid-template-columns: 1.2fr .8fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
-    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+    @media (max-width: 760px) {
+      .mode-grid { grid-template-columns: 1fr; }
+    }
+
+    .mode-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      cursor: pointer;
+      transition: .18s ease;
+      text-align: left;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-2px);
+      border-color: #cdd8e6;
+      box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border-radius: 999px;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .mode-title {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .mode-desc {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
     .panel {
       border: 1px solid var(--line);
       border-radius: 14px;
-      background: rgba(8, 13, 25, .66);
       padding: 12px;
+      background: #fff;
     }
-    .form {
+
+    .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
-    .form .full { grid-column: 1 / -1; }
-    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    input, select, button {
+
+    .form-grid .full { grid-column: 1 / -1; }
+
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    input, select, textarea {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 10px;
       padding: 10px;
-      background: #0b1222;
-      color: var(--text);
       font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
     }
-    button { cursor: pointer; font-weight: 700; }
-    .btnrow { display: flex; gap: 8px; }
-    .btnrow button { width: auto; }
-    .primary {
-      background: rgba(245, 158, 11, .20);
-      border-color: rgba(245, 158, 11, .55);
-    }
-    .ghost { color: var(--muted); }
-    .result {
+
+    textarea { min-height: 110px; resize: vertical; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
       margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 12px;
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 10px;
-      min-height: 94px;
-      background: rgba(11, 18, 34, .7);
+      min-height: 90px;
+      background: #fbfdff;
     }
+
     .line {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       margin: 8px 0;
     }
-    .lineTag { width: 28px; color: var(--muted); font-size: 13px; }
+
+    .line-tag {
+      width: 30px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .ball {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 999px;
       display: grid;
       place-items: center;
+      font-size: 14px;
       font-weight: 800;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
-      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+      border: 1px solid #d9e2ef;
+      background: #f8fafc;
     }
-    .plus { color: var(--muted); }
-    .meta { margin-top: 10px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+    .plus { color: var(--muted); font-weight: 700; }
+
+    .meta {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .meta .ok { color: var(--ok); font-weight: 700; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
     .chip {
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: 5px 9px;
       font-size: 12px;
-      background: rgba(255,255,255,.03);
-      color: var(--muted);
+      color: #334155;
+      background: #fff;
     }
-    .ok { color: var(--ok); }
-    .accent { color: var(--accent); }
   </style>
 </head>
 <body>
-  <main class="app">
-    <h1>오늘의 행운 로또 번호 생성기</h1>
-    <p class="sub">사주/운세 컨셉으로 날짜와 입력값을 조합해 번호를 추천합니다. 재미용 도구이며 당첨을 보장하지 않습니다.</p>
+  <div class="container">
+    <section id="homePage" class="page active">
+      <h1 class="title">로또 번호 생성기</h1>
+      <p class="sub">원하는 방식을 먼저 선택하세요. 모드에 들어가면 해당 방식 전용 화면만 보입니다.</p>
 
-    <div class="grid">
-      <section class="panel">
-        <div class="form">
+      <div class="mode-grid">
+        <button class="mode-card" id="goFortune" type="button">
+          <span class="badge">MODE 1</span>
+          <h3 class="mode-title">행운 모드 (사주/운세 컨셉)</h3>
+          <p class="mode-desc">날짜, 생년월일, 이름을 시드로 사용해 오늘의 행운 번호 조합을 추천합니다.</p>
+        </button>
+
+        <button class="mode-card" id="goAnalysis" type="button">
+          <span class="badge">MODE 2</span>
+          <h3 class="mode-title">전회차 분석기반 자동 모드</h3>
+          <p class="mode-desc">최근 회차 번호를 바탕으로 출현 빈도/최근성 점수를 계산해 자동 추천합니다.</p>
+        </button>
+      </div>
+    </section>
+
+    <section id="fortunePage" class="page">
+      <div class="topbar">
+        <h2>행운 모드</h2>
+        <button class="btn" data-back type="button">모드 선택으로</button>
+      </div>
+
+      <div class="panel">
+        <div class="form-grid">
           <div>
-            <label for="targetDate">기준 날짜</label>
-            <input id="targetDate" type="date" />
+            <label for="fDate">기준 날짜</label>
+            <input id="fDate" type="date" />
           </div>
           <div>
-            <label for="birthDate">생년월일(선택)</label>
-            <input id="birthDate" type="date" />
+            <label for="fBirth">생년월일(선택)</label>
+            <input id="fBirth" type="date" />
           </div>
           <div>
-            <label for="userName">이름(선택)</label>
-            <input id="userName" type="text" placeholder="예: 홍길동" maxlength="30" />
+            <label for="fName">이름(선택)</label>
+            <input id="fName" type="text" maxlength="30" placeholder="예: 홍길동" />
           </div>
           <div>
-            <label for="lineCount">생성 줄 수</label>
-            <select id="lineCount">
+            <label for="fLines">생성 줄 수</label>
+            <select id="fLines">
               <option value="1">1줄</option>
               <option value="3" selected>3줄</option>
               <option value="5">5줄</option>
             </select>
           </div>
+        </div>
+
+        <div class="actions">
+          <button id="fGen" class="btn primary" type="button">행운 번호 생성</button>
+          <button id="fCopy" class="btn" type="button" disabled>복사</button>
+        </div>
+
+        <div id="fResult" class="result"></div>
+        <div class="chips" id="fChips"></div>
+        <p id="fMeta" class="meta">아직 생성된 결과가 없습니다.</p>
+      </div>
+    </section>
+
+    <section id="analysisPage" class="page">
+      <div class="topbar">
+        <h2>전회차 분석기반 자동 모드</h2>
+        <button class="btn" data-back type="button">모드 선택으로</button>
+      </div>
+
+      <div class="panel">
+        <div class="form-grid">
           <div class="full">
-            <label for="mode">생성 방식</label>
-            <select id="mode">
-              <option value="fortune" selected>행운 모드 (사주/운세 컨셉)</option>
-              <option value="random">랜덤 모드 (완전 무작위)</option>
+            <label for="aHistory">최근 회차 번호 입력 (한 줄에 6개 + 보너스 1개)</label>
+            <textarea id="aHistory" placeholder="예) 3 11 15 29 35 44 + 10"></textarea>
+          </div>
+          <div>
+            <label for="aLines">생성 줄 수</label>
+            <select id="aLines">
+              <option value="1">1줄</option>
+              <option value="3" selected>3줄</option>
+              <option value="5">5줄</option>
+            </select>
+          </div>
+          <div>
+            <label for="aBlend">분석 성향</label>
+            <select id="aBlend">
+              <option value="balanced" selected>균형형</option>
+              <option value="hot">강한 출현수 우선</option>
+              <option value="cold">저출현 보완</option>
             </select>
           </div>
         </div>
 
-        <div class="btnrow" style="margin-top:10px;">
-          <button id="genBtn" class="primary" type="button">번호 생성</button>
-          <button id="copyBtn" class="ghost" type="button" disabled>결과 복사</button>
+        <div class="actions">
+          <button id="aGen" class="btn primary" type="button">분석 자동 생성</button>
+          <button id="aCopy" class="btn" type="button" disabled>복사</button>
         </div>
 
-        <div id="result" class="result" aria-live="polite"></div>
-        <p id="status" class="meta">아직 생성된 결과가 없습니다.</p>
-      </section>
-
-      <aside class="panel">
-        <strong>오늘 운세 요약</strong>
-        <div class="chips" id="fortuneChips"></div>
-        <p id="fortuneDesc" class="meta">날짜를 기준으로 오행/띠 성향을 계산해 가중치를 적용합니다.</p>
-        <p class="meta"><span class="accent">참고:</span> 이 추천은 통계적 당첨 예측이 아닌 엔터테인먼트용입니다.</p>
-      </aside>
-    </div>
-  </main>
+        <div id="aResult" class="result"></div>
+        <div class="chips" id="aChips"></div>
+        <p id="aMeta" class="meta">최근 회차를 넣고 자동 생성 버튼을 눌러주세요.</p>
+      </div>
+    </section>
+  </div>
 
   <script>
     const $ = (id) => document.getElementById(id);
+    const pages = {
+      home: $("homePage"),
+      fortune: $("fortunePage"),
+      analysis: $("analysisPage")
+    };
+
+    let fLast = "";
+    let aLast = "";
+
     const zodiac = ["쥐", "소", "호랑이", "토끼", "용", "뱀", "말", "양", "원숭이", "닭", "개", "돼지"];
     const elements = ["목", "화", "토", "금", "수"];
 
-    let lastText = "";
+    function show(pageKey) {
+      Object.values(pages).forEach((p) => p.classList.remove("active"));
+      pages[pageKey].classList.add("active");
+    }
 
-    function initDate() {
+    function setToday() {
       const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, "0");
-      const dd = String(now.getDate()).padStart(2, "0");
-      $("targetDate").value = `${yyyy}-${mm}-${dd}`;
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      $("fDate").value = `${y}-${m}-${d}`;
+    }
+
+    function numColor(n) {
+      if (n <= 10) return "#fde68a";
+      if (n <= 20) return "#bfdbfe";
+      if (n <= 30) return "#fecaca";
+      if (n <= 40) return "#bbf7d0";
+      return "#e5e7eb";
+    }
+
+    function makeBall(n) {
+      const b = document.createElement("span");
+      b.className = "ball";
+      b.textContent = n;
+      b.style.background = `linear-gradient(180deg, ${numColor(n)}, #ffffff)`;
+      return b;
+    }
+
+    function renderLines(rootId, lines) {
+      const el = $(rootId);
+      el.innerHTML = "";
+      lines.forEach((line, i) => {
+        const row = document.createElement("div");
+        row.className = "line";
+
+        const tag = document.createElement("span");
+        tag.className = "line-tag";
+        tag.textContent = `${i + 1}줄`;
+        row.appendChild(tag);
+
+        line.main.forEach((n) => row.appendChild(makeBall(n)));
+
+        const plus = document.createElement("span");
+        plus.className = "plus";
+        plus.textContent = "+";
+        row.appendChild(plus);
+
+        row.appendChild(makeBall(line.bonus));
+        el.appendChild(row);
+      });
+    }
+
+    function toText(lines) {
+      return lines.map((line, i) => `${i + 1}줄: ${line.main.join(", ")} + ${line.bonus}`).join("\n");
     }
 
     function xmur3(str) {
@@ -208,28 +458,7 @@
       };
     }
 
-    function randInt(rng, min, max) {
-      return Math.floor(rng() * (max - min + 1)) + min;
-    }
-
-    function colorHint(num) {
-      if (num <= 10) return "rgba(245, 158, 11, .26)";
-      if (num <= 20) return "rgba(59, 130, 246, .24)";
-      if (num <= 30) return "rgba(239, 68, 68, .22)";
-      if (num <= 40) return "rgba(34, 197, 94, .22)";
-      return "rgba(156, 163, 175, .22)";
-    }
-
-    function zodiacIndex(year) {
-      return ((year - 4) % 12 + 12) % 12;
-    }
-
-    function dayKey(dateStr) {
-      const d = new Date(dateStr + "T00:00:00");
-      return Math.floor(d.getTime() / 86400000);
-    }
-
-    function weightedUniquePick(rng, count, weights) {
+    function uniquePickByWeight(rng, count, weights) {
       const picked = new Set();
       while (picked.size < count) {
         let total = 0;
@@ -249,169 +478,206 @@
       return Array.from(picked);
     }
 
-    function fortuneProfile(targetDate, birthDate, name) {
-      const y = Number(targetDate.slice(0, 4));
-      const zToday = zodiac[zodiacIndex(y)];
-      const el = elements[((y + dayKey(targetDate)) % 5 + 5) % 5];
-      const by = birthDate ? Number(birthDate.slice(0, 4)) : y;
-      const zBirth = zodiac[zodiacIndex(by)];
-      const key = dayKey(targetDate);
+    function zodiacIndex(year) {
+      return ((year - 4) % 12 + 12) % 12;
+    }
 
-      const zodiacFav = {
-        "쥐": [1, 13, 25, 37], "소": [2, 14, 26, 38], "호랑이": [3, 15, 27, 39],
-        "토끼": [4, 16, 28, 40], "용": [5, 17, 29, 41], "뱀": [6, 18, 30, 42],
-        "말": [7, 19, 31, 43], "양": [8, 20, 32, 44], "원숭이": [9, 21, 33, 45],
-        "닭": [10, 22, 34], "개": [11, 23, 35], "돼지": [12, 24, 36]
-      };
+    function dayIndex(dateStr) {
+      const d = new Date(dateStr + "T00:00:00");
+      return Math.floor(d.getTime() / 86400000);
+    }
 
-      const elementMod = {
-        "목": [1, 6], "화": [2, 7], "토": [3, 8], "금": [4, 9], "수": [0, 5]
-      };
+    function buildFortuneProfile(date, birth, name) {
+      const y = Number(date.slice(0, 4));
+      const by = birth ? Number(birth.slice(0, 4)) : y;
+      const day = dayIndex(date);
+
+      const todayZodiac = zodiac[zodiacIndex(y)];
+      const birthZodiac = zodiac[zodiacIndex(by)];
+      const element = elements[((y + day) % 5 + 5) % 5];
+
+      const base = `${date}|${birth || "none"}|${name || "anon"}|${todayZodiac}|${birthZodiac}|${element}`;
 
       const favored = new Set();
-      zodiacFav[zToday].forEach((n) => favored.add(n));
-      zodiacFav[zBirth].forEach((n) => favored.add(n));
       for (let n = 1; n <= 45; n++) {
-        if (elementMod[el].includes(n % 10)) favored.add(n);
+        if ([1, 6].includes(n % 10) && element === "목") favored.add(n);
+        if ([2, 7].includes(n % 10) && element === "화") favored.add(n);
+        if ([3, 8].includes(n % 10) && element === "토") favored.add(n);
+        if ([4, 9].includes(n % 10) && element === "금") favored.add(n);
+        if ([0, 5].includes(n % 10) && element === "수") favored.add(n);
       }
-      const dayFav = ((key % 45) + 45) % 45 + 1;
-      favored.add(dayFav);
+      favored.add((day % 45) + 1);
 
       return {
-        zToday,
-        zBirth,
-        el,
-        favored: Array.from(favored).sort((a, b) => a - b).slice(0, 16),
-        seedBase: `${targetDate}|${birthDate || "none"}|${name || "anon"}|${zToday}|${zBirth}|${el}|${key}`
+        todayZodiac,
+        birthZodiac,
+        element,
+        favored: Array.from(favored),
+        base
       };
     }
 
-    function generateLineFortune(profile, idx) {
-      const seedFn = xmur3(profile.seedBase + `|${idx}`);
-      const rng = mulberry32(seedFn());
-      const weights = Array(46).fill(1);
-      for (let n = 1; n <= 45; n++) {
-        weights[n] = 1 + rng() * 0.2;
+    function genFortuneLines(profile, lineCount) {
+      const lines = [];
+      for (let i = 0; i < lineCount; i++) {
+        const seed = xmur3(profile.base + `|${i}`)();
+        const rng = mulberry32(seed);
+        const weights = Array(46).fill(1);
+
+        for (let n = 1; n <= 45; n++) {
+          weights[n] += rng() * 0.15;
+        }
+        profile.favored.forEach((n) => {
+          weights[n] += 1.1;
+        });
+
+        const picked = uniquePickByWeight(rng, 7, weights);
+        lines.push({
+          main: picked.slice(0, 6).sort((a, b) => a - b),
+          bonus: picked[6]
+        });
       }
-      profile.favored.forEach((n) => {
-        weights[n] += 1.15;
-      });
-      const picked = weightedUniquePick(rng, 7, weights);
-      const main = picked.slice(0, 6).sort((a, b) => a - b);
-      const bonus = picked[6];
-      return { main, bonus };
+      return lines;
     }
 
-    function generateLineRandom() {
-      const set = new Set();
-      while (set.size < 7) set.add(Math.floor(Math.random() * 45) + 1);
-      const arr = Array.from(set);
-      return {
-        main: arr.slice(0, 6).sort((a, b) => a - b),
-        bonus: arr[6]
-      };
+    function parseHistory(text) {
+      return text
+        .split(/\r?\n/)
+        .map((line) => (line.match(/\d+/g) || []).map(Number).filter((n) => n >= 1 && n <= 45))
+        .filter((arr) => arr.length >= 6)
+        .map((arr) => arr.slice(0, 7));
     }
 
-    function makeBall(n) {
-      const b = document.createElement("span");
-      b.className = "ball";
-      b.textContent = n;
-      b.style.background = `linear-gradient(180deg, ${colorHint(n)}, rgba(11,18,34,.80))`;
-      return b;
-    }
+    function genAnalysisLines(history, lineCount, blend) {
+      const freq = Array(46).fill(0);
+      const recency = Array(46).fill(0);
 
-    function render(lines) {
-      const el = $("result");
-      el.innerHTML = "";
-      lines.forEach((line, i) => {
-        const row = document.createElement("div");
-        row.className = "line";
-
-        const tag = document.createElement("span");
-        tag.className = "lineTag";
-        tag.textContent = `${i + 1}줄`;
-        row.appendChild(tag);
-
-        line.main.forEach((n) => row.appendChild(makeBall(n)));
-
-        const plus = document.createElement("span");
-        plus.className = "plus";
-        plus.textContent = "+";
-        row.appendChild(plus);
-
-        row.appendChild(makeBall(line.bonus));
-        el.appendChild(row);
-      });
-    }
-
-    function toText(lines) {
-      return lines.map((line, i) => `${i + 1}줄: ${line.main.join(", ")} + ${line.bonus}`).join("\n");
-    }
-
-    function renderFortune(profile, mode) {
-      const chips = $("fortuneChips");
-      chips.innerHTML = "";
-
-      const list = mode === "fortune"
-        ? [`오늘 띠 ${profile.zToday}`, `기준 오행 ${profile.el}`, `개인 띠 ${profile.zBirth}`, `행운 후보 ${profile.favored.slice(0, 6).join(", ")}`]
-        : ["랜덤 모드", "오행/띠 가중치 미적용"];
-
-      list.forEach((t) => {
-        const c = document.createElement("span");
-        c.className = "chip";
-        c.textContent = t;
-        chips.appendChild(c);
+      history.forEach((row, idx) => {
+        const recentWeight = history.length - idx;
+        row.forEach((n) => {
+          freq[n] += 1;
+          recency[n] += recentWeight;
+        });
       });
 
-      $("fortuneDesc").textContent = mode === "fortune"
-        ? "입력한 날짜, 생년월일, 이름을 바탕으로 시드와 가중치를 만들어 번호를 추천합니다."
-        : "완전 무작위로 번호를 생성합니다.";
+      const seed = xmur3(JSON.stringify(history) + "|analysis|" + blend)();
+      const rng = mulberry32(seed);
+      const lines = [];
+
+      for (let i = 0; i < lineCount; i++) {
+        const weights = Array(46).fill(1);
+        for (let n = 1; n <= 45; n++) {
+          const hot = freq[n] * 0.8 + recency[n] * 0.25;
+          const cold = Math.max(0, 8 - freq[n]) * 0.7;
+
+          if (blend === "hot") weights[n] += hot;
+          else if (blend === "cold") weights[n] += cold + recency[n] * 0.05;
+          else weights[n] += hot * 0.55 + cold * 0.45;
+
+          weights[n] += rng() * 0.2;
+        }
+
+        const picked = uniquePickByWeight(rng, 7, weights);
+        lines.push({
+          main: picked.slice(0, 6).sort((a, b) => a - b),
+          bonus: picked[6]
+        });
+      }
+
+      const rank = Array.from({ length: 45 }, (_, i) => i + 1)
+        .sort((a, b) => (freq[b] + recency[b] * 0.2) - (freq[a] + recency[a] * 0.2));
+
+      return { lines, top: rank.slice(0, 6), low: rank.slice(-6).reverse() };
     }
 
-    async function copyResult() {
-      if (!lastText) return;
+    async function copyText(text, metaId) {
+      if (!text) return;
       try {
-        await navigator.clipboard.writeText(lastText);
+        await navigator.clipboard.writeText(text);
       } catch {
         const ta = document.createElement("textarea");
-        ta.value = lastText;
+        ta.value = text;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
         ta.remove();
       }
-      $("status").innerHTML = `<span class="ok">복사 완료</span> - 클립보드에 저장했습니다.`;
+      $(metaId).innerHTML = `<span class="ok">복사 완료</span> - 클립보드에 저장했습니다.`;
     }
 
-    function generate() {
-      const targetDate = $("targetDate").value;
-      if (!targetDate) {
-        $("status").textContent = "기준 날짜를 입력해주세요.";
+    function initDefaults() {
+      setToday();
+      $("aHistory").value = [
+        "3 11 15 29 35 44 + 10",
+        "6 14 21 23 37 42 + 8",
+        "2 9 18 27 33 41 + 12",
+        "5 13 20 26 34 45 + 7",
+        "1 10 19 24 32 40 + 16"
+      ].join("\n");
+    }
+
+    $("goFortune").addEventListener("click", () => show("fortune"));
+    $("goAnalysis").addEventListener("click", () => show("analysis"));
+    document.querySelectorAll("[data-back]").forEach((btn) => {
+      btn.addEventListener("click", () => show("home"));
+    });
+
+    $("fGen").addEventListener("click", () => {
+      const date = $("fDate").value;
+      if (!date) {
+        $("fMeta").textContent = "기준 날짜를 입력해주세요.";
         return;
       }
 
-      const birthDate = $("birthDate").value;
-      const name = $("userName").value.trim();
-      const lineCount = Number($("lineCount").value);
-      const mode = $("mode").value;
-      const profile = fortuneProfile(targetDate, birthDate, name);
+      const birth = $("fBirth").value;
+      const name = $("fName").value.trim();
+      const count = Number($("fLines").value);
 
-      const lines = [];
-      for (let i = 0; i < lineCount; i++) {
-        lines.push(mode === "fortune" ? generateLineFortune(profile, i) : generateLineRandom());
+      const profile = buildFortuneProfile(date, birth, name);
+      const lines = genFortuneLines(profile, count);
+
+      renderLines("fResult", lines);
+      fLast = toText(lines);
+      $("fCopy").disabled = false;
+      $("fChips").innerHTML = [
+        `오늘 띠 ${profile.todayZodiac}`,
+        `개인 띠 ${profile.birthZodiac}`,
+        `오행 ${profile.element}`
+      ].map((v) => `<span class="chip">${v}</span>`).join("");
+
+      $("fMeta").innerHTML = `<span class="ok">생성 완료</span> - ${new Date().toLocaleString("ko-KR")}`;
+    });
+
+    $("fCopy").addEventListener("click", () => copyText(fLast, "fMeta"));
+
+    $("aGen").addEventListener("click", () => {
+      const history = parseHistory($("aHistory").value);
+      if (history.length === 0) {
+        $("aMeta").textContent = "최근 회차 번호를 최소 1줄 이상 입력해주세요.";
+        return;
       }
 
-      render(lines);
-      renderFortune(profile, mode);
+      const count = Number($("aLines").value);
+      const blend = $("aBlend").value;
+      const out = genAnalysisLines(history, count, blend);
 
-      lastText = toText(lines);
-      $("copyBtn").disabled = false;
-      $("status").innerHTML = `<span class="ok">생성 완료</span> - ${new Date().toLocaleString("ko-KR")}`;
-    }
+      renderLines("aResult", out.lines);
+      aLast = toText(out.lines);
+      $("aCopy").disabled = false;
 
-    initDate();
-    $("genBtn").addEventListener("click", generate);
-    $("copyBtn").addEventListener("click", copyResult);
+      $("aChips").innerHTML = [
+        `분석 줄 수 ${history.length}`,
+        `상위 출현 ${out.top.join(", ")}`,
+        `저출현 ${out.low.join(", ")}`
+      ].map((v) => `<span class="chip">${v}</span>`).join("");
+
+      const modeText = blend === "hot" ? "강한 출현수 우선" : blend === "cold" ? "저출현 보완" : "균형형";
+      $("aMeta").innerHTML = `<span class="ok">생성 완료</span> - ${modeText}으로 계산했습니다.`;
+    });
+
+    $("aCopy").addEventListener("click", () => copyText(aLast, "aMeta"));
+
+    initDefaults();
   </script>
 </body>
 </html>
